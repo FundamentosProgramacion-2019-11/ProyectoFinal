@@ -1,4 +1,5 @@
-#Bruno Omar Jiménez Mancilla
+#Bruno Omar Jiménez Mancilla A01748931
+#Juego utilizando la libreria pygame
 import pygame   # Librería de pygame
 # Dimensiones de la pantalla
 ANCHO = 800
