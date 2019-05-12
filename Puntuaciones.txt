@@ -1,0 +1,3 @@
+La puntuacion mas alta es:  100000
+ 
+Te faltaron, 87000, puntos para superar el record
