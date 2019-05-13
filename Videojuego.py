@@ -1,5 +1,5 @@
 # Autor: Mario Hernández Cárdenas
-# Videojuego sobre carreras
+# Proyecto Final: Videojuego sobre carreras
 
 import pygame
 
