@@ -1,0 +1,18 @@
+The capital of Libya is Benghazi.|False|10
+Albert Einstein was awarded the Nobel Prize in Physics.|True|10
+Baby koalas are called joeys.|True|10
+Gone with the Wind takes place in Savannah, Georgia.|False|10
+Brazil is the only country in the Americas whose official language is Portuguese.|True|10
+The first name of Kramer in Seinfeld is Cosmo.|True|10
+The American Civil War ended in 1776.|False|10
+A right triangle can never be equilateral.|True|10
+The Ford Edsel was named after Henry Ford’s father.|False|10
+“Paprika” is the Hungarian word for “pepper.”|True|10
+The Bill of Rights contains 10 amendments to the Constitution.|True|10
+Snow White’s seven dwarfs all worked as lumberjacks.|False|10
+The name Sylvia Plath was a pseudonym.|False|10
+There are seven red stripes in the United States flag.|True|10
+The favorite food of the Teenage Mutant Ninja Turtles is pizza.|True|10
+Thomas Jefferson was the second president of the United States.|False|10
+No bird can fly backwards.|False|10
+Freddy Kreuger is the villain in the “Friday the 13th” movies.|False|10
