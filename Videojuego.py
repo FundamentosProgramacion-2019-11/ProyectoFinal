@@ -8,7 +8,7 @@ ANCHO = 800
 ALTO = 600
 
 # Colores
-BLANCO = (255, 255, 255)     # R,G,B en el rango [0,255], 0 ausencia de color, 255 toda la intensidad
+BLANCO = (255, 255, 255)  # R,G,B en el rango [0,255], 0 ausencia de color, 255 toda la intensidad
 ROJO = (208, 0, 0)
 AZUL = (2, 79, 178)
 NEGRO = (0, 0, 0)
@@ -16,14 +16,14 @@ NEGRO = (0, 0, 0)
 # VARIABLES GLOBALES
 sector = 0
 velocidad = 1
-posicion = 0                 # Viendo hacia la derecha
-posicionAdv = 0              # Viendo hacia la derecha
+posicion = 0  # Viendo hacia la derecha
+posicionAdv = 0  # Viendo hacia la derecha
 distanciaX = 0
 distanciaY = 0
 seleccion = "nada"
 tiempoVuelta = 3200
 cuentaRegresivaInicio = 180  # 3 segundos
-cuentaRegresivaMeta = 180    # 3 segundos
+cuentaRegresivaMeta = 180  # 3 segundos
 
 
 # Dibujar el menu (botones)
@@ -455,8 +455,9 @@ def dibujarVehiculo(ventana, spriteUsuario, velocidad, movimientoFrente, movimie
     ventana.blit(spriteUsuario.image, spriteUsuario.rect)
 
 
-# Aqui movemos el adversario (?) NO. SE NECESITA UNA FUNCIÓN QUE MUEVA AL ADVERSARIO Y AHÍ SE MUEVE ESTO
-def dibujarAdversario(ventana, spriteAdversario, posicionAdv, velocidad, movimientoFrente, movimientoIzquierda, movimientoDerecha, distanciaX, distanciaY):
+# Aqui se dibuja el sprite del adversario y le indica hacia donde moverse
+def dibujarAdversario(ventana, spriteAdversario, posicionAdv, velocidad, movimientoFrente, movimientoIzquierda,
+                      movimientoDerecha, distanciaX, distanciaY):
     global xAdv, yAdv, sector
     velocidad1 = 6
     velocidad2 = 16
@@ -865,7 +866,8 @@ def cambiarSector(spriteUsuario, spriteAdversario):
             x = 801
             xAdv = 801
 
-# Mueve al adversario de forma autonoma
+
+# Mueve al adversario de forma autónoma
 def moverAdversario(ventana, spriteAdversario):
     global sector, xAdv, yAdv, posicionAdv
     # dibujarAdversario(ventana, spriteAdversario, posicionAdv, velocidad, movFrente, movIzq, movDer, distancia) Ejemplo
@@ -1289,7 +1291,6 @@ def dibujar():
     pygame.mixer.music.load("musica_BornToBeWild_Steppenwolf.mp3")
     pygame.mixer.music.play(-1, 1.8)
 
-
     # TEXTO
     fuente8BitsGrande = pygame.font.Font("8-BIT WONDER.TTF", 60)
     fondo8BitsGrande = pygame.font.Font("8-BIT WONDER.TTF", 60)
@@ -1346,9 +1347,9 @@ def dibujar():
 
                 elif estado == SELECCIONAUTO:
                     if 133 < xMouse < 273 and 185 < yMouse < 465:
-                        seleccion = "rojo"      # CAMBIA SPRITE A ROJO
+                        seleccion = "rojo"  # CAMBIA SPRITE A ROJO
                     elif 532 < xMouse < 672 and 185 < yMouse < 465:
-                        seleccion = "azul"      # CAMBIAR SPRITE A AZUL
+                        seleccion = "azul"  # CAMBIAR SPRITE A AZUL
                     if seleccion == "rojo" or seleccion == "azul":
                         if 300 < xMouse < 500 and 515 < yMouse < 565:
                             estado = CUENTAREGRESIVA
@@ -1367,6 +1368,7 @@ def dibujar():
                         y = 175
                         xAdv = 145
                         yAdv = 405
+                        seleccion = "nada"
                         cuentaRegresivaInicio = 180
                         movimientoDerecha = False
                         movimientoIzquierda = False
@@ -1385,6 +1387,7 @@ def dibujar():
                         y = 175
                         xAdv = 145
                         yAdv = 405
+                        seleccion = "nada"
                         cuentaRegresivaInicio = 180
                         movimientoDerecha = False
                         movimientoIzquierda = False
@@ -1423,10 +1426,10 @@ def dibujar():
                         sonidoVelocidad3.play()
 
                     elif evento.key == pygame.K_e:
-                        posicion += 1   # Transformar sprite +45 grados
+                        posicion += 1  # Transformar sprite +45 grados
 
                     elif evento.key == pygame.K_q:
-                        posicion -= 1   # Transformar sprite -45 grados
+                        posicion -= 1  # Transformar sprite -45 grados
 
                     elif evento.key == pygame.K_ESCAPE or evento.key == pygame.K_p:
                         estado = PAUSA
