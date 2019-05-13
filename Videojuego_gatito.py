@@ -3,6 +3,7 @@
 
 import pygame   # Librería de pygame
 import math
+import random
 # Dimensiones de la pantalla
 ANCHO = 800
 ALTO = 600
@@ -85,35 +86,41 @@ def dibujarProyectil(ventana, spriteBala):
             spriteBala.rect.left = -1
 
 
-
-def ColisionEnemigo(listaBalas, listaEnemigos):
-
+def probarColisión(listaBalas, listaEnemigos):
     for bala in listaBalas:
         for enemigo in listaEnemigos:
             if bala.rect.colliderect(enemigo)== True:
                 listaEnemigos.remove(enemigo)
                 listaBalas.remove(bala)
+                return 0
+                break
+
+
+def probarColisiónMuerto(listaBalas, listaMuerto):
+    for bala in listaBalas:
+
+        for muerto in listaMuerto:
+            print(len(listaMuerto))
+            if bala.rect.colliderect(muerto)== True:
+                listaMuerto.remove(muerto)
+                listaBalas.remove(bala)
+                print(len(listaMuerto))
+                return 0
+                break
 
 
 
 
-
-
-
-
-def dibujarMarcador(ventana, marcador, fuente, listaEnemigo):
-
-
-    texto = fuente.render("Puntos: " + str(marcador),0, ROJO) #convierte texto a imagen
-    ventana.blit(texto,(10,50))
-
+def dibujarMarcador(ventana, marcador, fuente):
+    texto = fuente.render("Puntos: " + str(marcador),1, ROJO) #convierte texto a imagen
+    ventana.blit(texto,(50,60))
+   # if probarColisión == True:
 
 
 
 def genararEnemigos(listaEnemigos, imgEnemigo):
-
-    if xEnemigo == ANCHO - 239 or xEnemigo <= 0:  # 128 x 78
-        DX = -DX
+    if xMuerto == ANCHO - 239 or xMuerto <= 0:  # 128 x 78
+                DX = -DX
     for y in range(100, 200+1, 100): # donde empieza donde termina y va de 100 e 100  #renglones de enemigos que aparecerán en pantalla
         for x in range (133,670,133): # esta es la varieba x o sea columnas horizontales
             #crear enemigos en x,y con sprites
@@ -123,6 +130,7 @@ def genararEnemigos(listaEnemigos, imgEnemigo):
             spriteEnemigo.rect.left = x
             spriteEnemigo.rect.top = y
             listaEnemigos.append (spriteEnemigo) #es la lista de sprite
+            #print(len(listaEnemigos))
 
 
 
@@ -130,17 +138,25 @@ def dibujarListaEnemigo(ventana, listaEnemigo):
     for enemigo in listaEnemigo:
         ventana.blit(enemigo.image, enemigo.rect)
 
-
-def verificarColision(listaMuerto, spriteBala,listaBalas):
-    for bala in listaBalas:
-        for muerto in listaMuerto:
-            if muerto.rect.colliderect(spriteBala)  == True:
-                listaMuerto.remove(muerto)
-                spriteBala.rect.left = -1
+def dibujarListaMuerto(ventana, listaMuerto):
+    print(len(listaMuerto))
+    for muerto in listaMuerto:
+        ventana.blit(muerto.image, muerto.rect)
 
 
+def verificarColision(listaEnemigos, spriteBala, muerto):
+    for enemigo in listaEnemigos:
+        if enemigo.rect.colliderect(spriteBala)  == True:
+            listaEnemigos.remove(enemigo)
+            spriteBala.rect.left = -1
 
-            break
+
+def verificarColisionMuerto(listaMuerto, spriteBala, enemigo):
+    for muerto in listaMuerto:
+        if muerto.rect.colliderect(spriteBala)  == True:
+            listaMuerto.remove(muerto)
+            spriteBala.rect.left = -1
+            print(len(listaMuerto))
 
 
 
@@ -159,6 +175,32 @@ def dibujarListaBalas(ventana, listaBalas):
 def moverBalas(listaBalas):
     for bala in listaBalas:
         bala.rect.top -= 20
+
+
+def dibujarNaranja(ventana, naranja):
+    global Xnaranja, DX, Ynajanja, DY
+    ventana.blit(naranja, (Xnaranja, Ynajanja))
+    Xnaranja += DX
+    # probar choque der-izq
+    if Xnaranja == ANCHO - 239 or Xnaranja <= 0:  # 128 x 78
+        DX = -DX
+
+
+def dibujarRosa(ventana, rosa):
+    global Xrosa, DX, Yrosa, DY
+    ventana.blit(rosa, (Xrosa, Yrosa))
+    Xrosa += DX
+    # probar choque der-izq
+    if Xrosa == ANCHO - 239 or Xrosa <= 0:  # 128 x 78
+        DX = -DX
+
+def premios(puntos, spriteBala, rosa, naranja):
+    if spriteBala.rect.colliderect(naranja):
+        puntos +=1000
+
+    elif spriteBala.rect.colliderect(rosa):
+        puntos+= 5000
+
 
 
 def dibujarFondoMenu(ventana, fondoMenu):
@@ -180,20 +222,31 @@ def dibujarFondoPerdiste(ventana, fondoPerdiste):
 
 
 def generarMuerto(listaMuerto, muerto):
-    for y in range(200, 400+1, 100): # donde empieza donde termina y va de 100 e 100  #renglones de enemigos que aparecerán en pantalla
-        for x in range (133): # esta es la varieba x o sea columnas horizontales
+
+    #for y in range(1): # donde empieza donde termina y va de 100 e 100  #renglones de enemigos que aparecerán en pantalla
+      #for x in range (1): # esta es la varieba x o sea columnas horizontales
+
             #crear enemigos en x,y con sprites
-            spriteMuerto = pygame.sprite.Sprite()
-            spriteMuerto.image= muerto
-            spriteMuerto.rect = muerto.get_rect()
-            spriteMuerto.rect.left = x
-            spriteMuerto.rect.top = y
-            listaMuerto.append (spriteMuerto) #es la lista de sprite
+        spriteMuerto = pygame.sprite.Sprite()
+        spriteMuerto.image= muerto
+        spriteMuerto.rect = muerto.get_rect()
+
+
+
+
+        #spriteMuerto.rect.left = x
+        #spriteMuerto.rect.top = y
+        listaMuerto.append(spriteMuerto) #es la lista de sprite
+            #print(len(listaMuerto))
+
+
+
 
 
 def dibujarmuerto(ventana, muerto):
     global xMuerto, DX, yMuerto, DY
     ventana.blit(muerto, (xMuerto, yMuerto))
+    xMuerto += 0
     xMuerto += DX
     # probar choque der-izq
     if xMuerto == ANCHO - 239 or xMuerto <= 0:  # 128 x 78
@@ -202,38 +255,13 @@ def dibujarmuerto(ventana, muerto):
 
 
 
-
-
-def contarPuntos(listaEnemigos, marcador):
+def NohayEnemigos(listaEnemigos, enemigo):
     for enemigo in listaEnemigos:
-        if ColisionEnemigo == True:
-            marcador += 500
 
-
-def dibujarNaranja(ventana, naranja):
-    global Xnaranja, DX, Ynajanja, DY
-    ventana.blit(naranja, (Xnaranja, Ynajanja))
-    Xnaranja += DX
-    # probar choque der-izq
-    if Xnaranja == ANCHO - 239 or Xnaranja <= 0:  # 128 x 78
-        DX = -DX
-
-
-def dibujarRosa(ventana, rosa):
-    global Xrosa, DX, Yrosa, DY
-    ventana.blit(rosa, (Xrosa, Yrosa))
-    Xrosa += DX
-    # probar choque der-izq
-    if Xrosa == ANCHO - 239 or Xrosa <= 0:  # 128 x 78
-        DX = -DX
-
-
-def premios(puntos, spriteBala, rosa, naranja):
-    if spriteBala.rect.colliderect(naranja):
-        puntos +=1000
-
-    elif spriteBala.rect.colliderect(rosa):
-        puntos+= 5000
+        if enemigo == 0:
+            NohayEnemigos = True
+        else:
+            NohayEnemigos= False
 
 
 
@@ -254,8 +282,8 @@ def dibujar():
     fondoJuego= pygame.image.load("fondo_nivel.png")
     gatita = pygame.image.load("gato_tamaño.png")
     muerto = pygame.image.load("estambre_morado_.png")
-    naranja =pygame.image.load("estambre_naranja_.png")
-    rosa=pygame.image.load("estambre_rosa_.png")
+    naranja = pygame.image.load("estambre_naranja_.png")
+    rosa = pygame.image.load("estambre_rosa_.png")
     enemigo = pygame.image.load("estambre_verde_.png")
     imgBala = pygame.image.load("estambre_azul_.png")
 
@@ -263,10 +291,19 @@ def dibujar():
     listaEnemigos=[] #creamos una lista vacía
     genararEnemigos(listaEnemigos, enemigo)
     listaMuerto =[]
+    print(len(listaMuerto))
     generarMuerto(listaMuerto, muerto)
+
 
     #lista de proyectile
     listaBalas = [] #lista vacía
+
+    #variable enemigos
+    enemigos = len(listaEnemigos)
+    #print(enemigos)
+
+    #variable muerto
+    muertos = len(listaMuerto)
 
     #SPRITES
     spriteBala= pygame.sprite.Sprite()
@@ -289,17 +326,17 @@ def dibujar():
     ymouse = -1
 
     #estados
-    MENU =1
+    MENU = 1
     NIVEL1 = 2
     GANASTE = 3
-    PERDISTE =4
+    PERDISTE = 4
     estado = MENU
 
     #texto
     fuente= pygame.font.SysFont("Arial", 56)
 
     marcador= 0
-    puntos = 0
+
 
 
 
@@ -330,15 +367,12 @@ def dibujar():
                     nuevaBala.rect.top = ygatita
                     listaBalas.append(nuevaBala)
                     efectoDisparo.play()
-            elif evento.type == pygame.KEYUP:
-                if evento.key== pygame.K_p:
-                        estado = PERDISTE
 
-                elif evento.key == pygame.K_m:
-                        estado = MENU
 
-                elif evento.key == pygame.K_g:
-                        estado= GANASTE
+                elif muerto.rect.colliderect(spriteBala) == True:
+                    estado = PERDISTE
+
+                
 
 
 
@@ -358,21 +392,36 @@ def dibujar():
 
         elif estado== NIVEL1:
             # actualizar
-            probarColision = ColisionEnemigo(listaBalas, listaEnemigos)
-            while probarColision == True:  #es la condición
+            hayColision=probarColisión(listaBalas, listaEnemigos)
+            hayColisionMuerto = probarColisiónMuerto(listaBalas,listaMuerto)
+            if hayColision == 0:  #es la condición
+                enemigos -= 1
+                #print(enemigos)
                 marcador += 500
+                if enemigos == 0:
+                    print(45)
+                    #print(estado)
+                    estado = GANASTE
+
+            if hayColisionMuerto == 0:
+                muertos -=1
+                if muertos == 0:
+                    print(54)
+                    estado = PERDISTE
+
+
+
+
 
 
 
 
 
              #COLISIÓN CONTRA TODOS LOS ENEMIGOS
+            verificarColision(listaEnemigos, spriteBala, muerto)
+            #NohayEnemigos(listaEnemigos, enemigo)
 
-            contarPuntos(listaEnemigos, puntos)
-
-            #premios(puntos,spriteBala, rosa, naranja)
-
-
+            #verificarColisionMuerto(listaMuerto, spriteBala, enemigo)
 
 
             moverBalas(listaBalas)# lista para que avancen as balas
@@ -381,15 +430,16 @@ def dibujar():
             dibujarFondo(ventana, fondoJuego)
             dibujarGatita(ventana, gatita)
             #dibujarEnemigo( ventana, enemigo)
-            dibujarmuerto (ventana, muerto)
+            #dibujarmuerto (ventana, muerto)
             dibujarListaEnemigo (ventana, listaEnemigos)
+            dibujarListaMuerto(ventana, listaMuerto)
+            dibujarNaranja(ventana, naranja)
+            dibujarRosa(ventana, rosa)
             dibujarProyectil( ventana, spriteBala)
             dibujarListaBalas(ventana, listaBalas)
-            dibujarNaranja(ventana,naranja)
-            dibujarRosa (ventana,rosa)
-            dibujarMarcador(ventana, marcador, fuente, contarPuntos)
             #dibujarAtaque(ventana, spriteAtaque)
-
+            # dibuja el texto
+            dibujarMarcador(ventana, marcador, fuente)
 
 
 
@@ -397,15 +447,12 @@ def dibujar():
 
         elif estado == GANASTE:
             dibujarFondoGanaste(ventana, fondoGanaste)
-
-
-
+            #mostrarPuntos()
 
 
 
 
         elif estado == PERDISTE:
-
             dibujarFondoPerdiste(ventana, fondoPerdiste)
 
         pygame.display.flip()  # Actualiza trazos (Si no llamas a esta función, no se dibuja)
