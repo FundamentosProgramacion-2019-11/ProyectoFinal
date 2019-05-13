@@ -1,3 +1,5 @@
+#Autor: Daniela Estrella Tovar
+#Crear un código que mediante lo visto en clase, logré la ejecución de un videojuego.
 import math
 
 import pygame  # Librería de pygame
