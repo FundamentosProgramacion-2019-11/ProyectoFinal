@@ -1,6 +1,6 @@
 # encoding: UTF-8
-# Autor: Aline Villegas Berdejo
-#
+# Autor: Aline Villegas Berdejo, A01375818
+#Este programa es un videojuego de  "Mario Bros". Mario contra Bowser. Cada uno tiene 5 vidas y se disparan fuego. Quien llego primero a 0 pierde.
 
 import pygame  # Librería de pygame
 import random
@@ -34,6 +34,7 @@ listaFuegoBowser = []
 velocidadYMario = 0
 
 
+#Crea los fuegos de Bowser (el enemigo9
 def crearFuego(spriteEnemigo, spriteMario):
     spriteFuego = pygame.sprite.Sprite()
     spriteFuego.image = imgFuego
@@ -50,6 +51,7 @@ def crearFuego(spriteEnemigo, spriteMario):
     listaFuegoBowser.append([spriteFuego, vx, vy])
 
 
+#Crea los fuegos de Mario
 def crearFuegoMario(spriteMario):
     spriteFuego = pygame.sprite.Sprite()
     spriteFuego.image = imgFuego
@@ -65,6 +67,7 @@ def crearFuegoMario(spriteMario):
     listaFuegoMario.append([spriteFuego, vx, vy])
 
 
+#Elimina los fuegos  de la lista que no están en pantalla
 def moverFuego(listaFuego):
     for fuego in listaFuego:
         fuego[0].rect.right += fuego[1] * 5
@@ -73,6 +76,7 @@ def moverFuego(listaFuego):
             listaFuego.remove(fuego)
 
 
+#Lanza los fuegos de Bowser de manera aleatoria
 def actualizarBowser(ventana, spriteEnemigo, spriteMario, efectoDisparo):
     if random.randint(0, 200) == 0:
         crearFuego(spriteEnemigo, spriteMario)
@@ -81,11 +85,11 @@ def actualizarBowser(ventana, spriteEnemigo, spriteMario, efectoDisparo):
     moverFuego(listaFuegoBowser)
     for spriteFuego in listaFuegoBowser:
         ventana.blit(spriteFuego[0].image, spriteFuego[0].rect)
-        # Actualizar Fuego
         if not 0 < spriteFuego[0].rect.left < ANCHO or not 0 < spriteFuego[0].rect.top < ALTO:
-            listaFuegoBowser.remove(spriteFuego)
+            listaFuegoBowser.remove(spriteFuego)  #Elimina fuego fuera de la pantalla
 
 
+#Actualiza fuegos de Mario
 def actualizarMario(ventana, spriteMario):
     global velocidadYMario
     if spriteMario.rect.bottom < ALTO - 50:
@@ -99,10 +103,11 @@ def actualizarMario(ventana, spriteMario):
             listaFuegoMario.remove(spriteFuego)
 
 
+#Verifica  si hay colisión entre el fuego de Bowser y Mario
 def verificarColisionFuegoEnemigo(spriteMario):
     global vidasMario
     for fuego in listaFuegoBowser:
-        if fuego[0].rect.colliderect(spriteMario):
+        if fuego[0].rect.colliderect(spriteMario):  #Si si hay colisión le baja una vida a Mario
             vidasMario -= 1
             listaFuegoBowser.remove(fuego)
             if vidasMario == 0:
@@ -110,10 +115,11 @@ def verificarColisionFuegoEnemigo(spriteMario):
     return False
 
 
+#Verifica si hay colisión con Bowser
 def verificarColisionesBowser(spriteEnemigo):
     global vidasBowser
     for fuego in listaFuegoMario:
-        if fuego[0].rect.colliderect(spriteEnemigo):  # Prueba colisión
+        if fuego[0].rect.colliderect(spriteEnemigo):  # Prueba colisión, si si hay se le quita una vida a Bowser
             vidasBowser -= 1
             listaFuegoMario.remove(fuego)
             if vidasBowser == 0:
@@ -121,6 +127,7 @@ def verificarColisionesBowser(spriteEnemigo):
     return False
 
 
+#Dibuja las vidas de Mario y Bowser
 def dibujarMarcador(ventana, fuente, puntos, fuente2, marcador):
     texto = fuente.render("Vidas", 1, BLANCO)
     ventana.blit(texto, (ANCHO // 2 - 130, 50))
@@ -141,6 +148,7 @@ def dibujarMenu(ventana, btnJugar, fondoMenu, fuente2, juegoGanado):
     ventana.blit(texto, (180, 100))
 
 
+#Dibuja el fondo del juego en JUGANDO
 def dibujarFondo(ventana):
     ventana.blit(fondoJuego, (0, 0))
 
@@ -153,6 +161,7 @@ def dibujar():
     reloj = pygame.time.Clock()  # Para limitar los fps
     termina = False  # Bandera para saber si termina la ejecución, iniciamos suponiendo que no
 
+    #ARCHIVO
     juegoGanado = open("PartidaPasada.txt", "r")
     juegoGanado = int(juegoGanado.readline())
 
@@ -179,8 +188,11 @@ def dibujar():
 
     # AUDIO (SONIDO)
     pygame.mixer.init()
+
     # Sonido corto    Soud -- wav
+
     efectoDisparo = pygame.mixer.Sound("shoot.wav")
+
     # Sonido largo  Music  -- mp3
     pygame.mixer.music.load("musicaFondo.mp3")
     pygame.mixer.music.play()
