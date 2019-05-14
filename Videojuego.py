@@ -1,5 +1,5 @@
 # Autor: Mario Hernández Cárdenas
-# Proyecto Final: Videojuego sobre carreras
+# Videojuego sobre carreras
 
 import pygame
 
@@ -8,7 +8,7 @@ ANCHO = 800
 ALTO = 600
 
 # Colores
-BLANCO = (255, 255, 255)  # R,G,B en el rango [0,255], 0 ausencia de color, 255 toda la intensidad
+BLANCO = (255, 255, 255)
 ROJO = (208, 0, 0)
 AZUL = (2, 79, 178)
 NEGRO = (0, 0, 0)
@@ -21,13 +21,13 @@ posicionAdv = 0  # Viendo hacia la derecha
 distanciaX = 0
 distanciaY = 0
 seleccion = "nada"
-tiempoVuelta = 3200
+tiempoVuelta = 0
 cuentaRegresivaInicio = 180  # 3 segundos
 cuentaRegresivaMeta = 180  # 3 segundos
 
 
 # Dibujar el menu (botones)
-def dibujarMenu(ventana, btnJugar, btnInstrucciones, btnSalir, fuente, fondoLetra):
+def dibujarMenu(ventana, btnJugar, btnInstrucciones, btnSalir, fuente, fondoLetra, fuenteResultado, fondoResultado):
     posicionImagenX = (ANCHO // 2) - (pygame.Surface.get_width(btnJugar) // 2)
     ventana.blit(btnJugar, (posicionImagenX, ALTO // 2 - pygame.Surface.get_height(btnJugar) // 2))
     ventana.blit(btnInstrucciones, (posicionImagenX, ALTO // 2 + 75 - pygame.Surface.get_height(btnInstrucciones) // 2))
@@ -37,6 +37,18 @@ def dibujarMenu(ventana, btnJugar, btnInstrucciones, btnSalir, fuente, fondoLetr
     posicionTitulo = ANCHO // 2 - pygame.Surface.get_width(texto) // 2
     ventana.blit(textoFondo, (posicionTitulo + 3, 128))  # Fondo para el texto
     ventana.blit(texto, (posicionTitulo, 125))  # Texto
+    mejorVuelta = open("MejorCarrera.txt", "r", encoding="UTF-8")
+    mejorTiempo = mejorVuelta.readline()
+    minutos, segundos = interpetarTiempo(int(mejorTiempo))
+    textoTiempo1 = fuenteResultado.render("El mejor tiempo de vuelta es", 1, BLANCO)
+    textoTiempo2 = fuenteResultado.render("%s minutos con %s segundos" % (minutos, segundos), 1, BLANCO)
+    fondoTiempo1 = fuenteResultado.render("El mejor tiempo de vuelta es", 1, NEGRO)
+    fondoTiempo2 = fuenteResultado.render("%s minutos con %s segundos" % (minutos, segundos), 1, NEGRO)
+    ventana.blit(fondoTiempo1, (posicionTitulo // 2 - 57, 503))
+    ventana.blit(fondoTiempo2, (posicionTitulo // 2 - 22, 553))
+    ventana.blit(textoTiempo1, (posicionTitulo // 2 - 60, 500))
+    ventana.blit(textoTiempo2, (posicionTitulo // 2 - 25, 550))
+    mejorVuelta.close()
 
 
 # Dibuja los botones para interactuar
@@ -1178,13 +1190,13 @@ def interpetarTiempo(tiempoVuelta):
         tiempoVuelta = tiempoVuelta - 3600
         segundos = tiempoVuelta // 60
         return "1", str(segundos)
-    elif 7200 <= tiempoVuelta <= 10800:
+    elif 7200 <= tiempoVuelta < 10800:
         tiempoVuelta = tiempoVuelta - 7200
         segundos = tiempoVuelta // 60
         return "2", str(segundos)
     else:
-        minutos = tiempoVuelta / 3600
-        segundos = (tiempoVuelta - 60 * minutos) // 60
+        minutos = tiempoVuelta // 3600
+        segundos = (tiempoVuelta - 3600 * minutos) // 60
         return str(minutos), str(segundos)
 
 
@@ -1317,8 +1329,8 @@ def dibujar():
     while not termina:
         # Procesa los eventos que recibe
         for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:  # El usuario hizo click en el botón de salir
-                termina = True  # Queremos terminar el ciclo
+            if evento.type == pygame.QUIT:
+                termina = True
 
             elif evento.type == pygame.MOUSEBUTTONDOWN:  # Tecleo de mouse
                 xMouse, yMouse = pygame.mouse.get_pos()
@@ -1373,6 +1385,7 @@ def dibujar():
                         movimientoDerecha = False
                         movimientoIzquierda = False
                         movimientoFrente = False
+                        tiempoVuelta = 0
                     elif 300 <= xMouse <= 500 and 425 <= yMouse <= 475:
                         termina = True
 
@@ -1392,13 +1405,42 @@ def dibujar():
                         movimientoDerecha = False
                         movimientoIzquierda = False
                         movimientoFrente = False
+                        tiempoVuelta = 0
                     elif 300 <= xMouse <= 500 and 350 <= yMouse <= 400:
                         termina = True
 
                 elif estado == RESULTADOS:
                     if 300 <= xMouse <= 500 and 275 <= yMouse <= 325:
+                        sector = 0
+                        velocidad = 1
+                        posicion = 0
+                        posicionAdv = 0
+                        x = 200
+                        y = 175
+                        xAdv = 145
+                        yAdv = 405
+                        seleccion = "nada"
+                        cuentaRegresivaInicio = 180
+                        movimientoDerecha = False
+                        movimientoIzquierda = False
+                        movimientoFrente = False
+                        tiempoVuelta = 0
                         estado = SELECCIONAUTO
                     elif 300 <= xMouse <= 500 and 350 <= yMouse <= 400:
+                        sector = 0
+                        velocidad = 1
+                        posicion = 0
+                        posicionAdv = 0
+                        x = 200
+                        y = 175
+                        xAdv = 145
+                        yAdv = 405
+                        seleccion = "nada"
+                        cuentaRegresivaInicio = 180
+                        movimientoDerecha = False
+                        movimientoIzquierda = False
+                        movimientoFrente = False
+                        tiempoVuelta = 0
                         estado = MENU
                     elif 300 <= xMouse <= 500 and 425 <= yMouse <= 475:
                         termina = True
@@ -1454,7 +1496,7 @@ def dibujar():
         # Dibujar, aquí haces todos los trazos que requieras
         if estado == MENU:
             dibujarFondo(ventana, pistaSalida)
-            dibujarMenu(ventana, btnJugar, btnInstrucciones, btnSalir, fuente8BitsGrande, fondo8BitsGrande)
+            dibujarMenu(ventana, btnJugar, btnInstrucciones, btnSalir, fuente8BitsGrande, fondo8BitsGrande, fuente8BitsTitulo, fondo8BitsTitulo)
 
         elif estado == INSTRUCCIONES:
             dibujarFondo(ventana, menuInstrucciones)
@@ -1500,12 +1542,13 @@ def dibujar():
             spriteUsuario = obtenerSpriteUsuario(seleccion, autoAzul, autoRojo, posicion)
             spriteAdversario = obtenerSpriteAdversario(seleccion, autoAzul, autoRojo, posicionAdv)
 
-            dibujarVelocidad(ventana, fuente8BitsTitulo, fondo8BitsTitulo, velocidad)  # , sector while
+            dibujarVelocidad(ventana, fuente8BitsTitulo, fondo8BitsTitulo, velocidad)
             dibujarVuelta(ventana, fuente8BitsTitulo, fondo8BitsTitulo, sector)
             cambiarSector(spriteUsuario, spriteAdversario)
 
             dibujarVehiculo(ventana, spriteUsuario, velocidad, movimientoFrente, movimientoIzquierda, movimientoDerecha)
             moverAdversario(ventana, spriteAdversario)
+            tiempoVuelta += 1
 
             if verificarColision(spriteUsuario, spriteAdversario):
                 estado = COLISION
@@ -1542,10 +1585,18 @@ def dibujar():
         elif estado == RESULTADOS:
             minutos, segundos = interpetarTiempo(tiempoVuelta)
             dibujarFondo(ventana, pistaSalida)
-            dibujarVehiculo(ventana, spriteUsuario, 1, False, False, False)
-            dibujarAdversario(ventana, spriteAdversario, 1, sector, False, False, False, 0, 0)
             dibujarTiempo(ventana, fondo8bitsResultados, fuente8bitsResultados, minutos, segundos)
             dibujarBotones(ventana, btnVolverAJugar, btnMenu, btnSalir)
+            mejorVuelta = open("MejorCarrera.txt", "r", encoding="UTF-8")
+            mejorTiempo = mejorVuelta.readline()
+
+            if int(mejorTiempo) > int(tiempoVuelta):
+                if mejorTiempo != tiempoVuelta:
+                    grabarTiempo = open("MejorCarrera.txt", "w", encoding="UTF-8")
+                    grabarTiempo.write(str(tiempoVuelta))
+                    grabarTiempo.close()
+
+            mejorVuelta.close()
 
         pygame.display.flip()
         reloj.tick(60)
