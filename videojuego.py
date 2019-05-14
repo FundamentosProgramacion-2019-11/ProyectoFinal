@@ -84,7 +84,7 @@ def dibujarMarcador(ventana, fuente, puntos):
 
 
 def generarEnemigos(listaEnemigos, imgEnemigo):
-    for y in range(20, 150*3+1, 150):
+    for y in range(20, 150*3, 150):
         for x in range(133,600,133):
             spriteEnemigo = pygame.sprite.Sprite()
             spriteEnemigo.image = imgEnemigo
