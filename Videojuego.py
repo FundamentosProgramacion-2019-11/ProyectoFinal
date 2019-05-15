@@ -1,6 +1,6 @@
 # Autor: Juan Carlos Flores García, A01376511. Grupo 4.
 
-# Descripción: Videojuego de disparos ambientado en el espacio y basado en la serie Star Trwk.
+# Descripción: Videojuego ambientado en el espacio dónde el jugador maneja una nave y elimina enemigos disparando con la nave.
 
 
 import pygame   # Librería de pygame
