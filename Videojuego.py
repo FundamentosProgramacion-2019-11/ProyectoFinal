@@ -267,7 +267,7 @@ def dibujar():
             resultado = verificarColision(listaEnemigos, listaBalas)
             if resultado == True:
                 danoEnemigo.play()
-                puntos += 1000
+                puntos += 250
             dano = verificarColisionJugador(listaEnemigos, spritePersonaje)
             if dano == True:
                 danoPersonaje.play()
