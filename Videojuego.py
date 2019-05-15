@@ -227,7 +227,7 @@ def dibujar():
                 xb = ANCHO//2-72.5
                 yb = ALTO - 200
                 if xm > xb and xm <= xb+145 and ym >= yb and ym <= yb+56:
-                    pygame.mixer.stop()
+                    pygame.mixer.music.stop()
                     estado = 2
                     pygame.mixer.init()
                     pygame.mixer.music.load("Beyond.mp3")
@@ -282,9 +282,11 @@ def dibujar():
             dibujarMarcador(ventana, fuente, puntos)
             dibujarMarcadorVida(ventana, fuente, vida)
             if puntos == 5000:
+                pygame.mixer.music.stop()
                 estado = 3
 
             if vida == 0:
+                pygame.mixer.music.stop()
                 estado = 4
 
         elif estado == GANAR:
