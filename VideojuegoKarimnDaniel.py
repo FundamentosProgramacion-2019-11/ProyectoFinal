@@ -15,7 +15,7 @@ AZUL = (0, 0, 255)
 NEGRO = (0, 0, 0)
 
 xalaX = ANCHO // 2
-yalaX = ALTO // 2 + 60
+yalaX = ALTO // 2 + 150
 
 xcazaTie = ANCHO // 2
 ycazaTie = 200
@@ -56,12 +56,11 @@ def dibujarMision(ventana, bMenu, background, instruccion, btnJugar):
     ventana.blit(instruccion, (0, 0))
 
 
-def dibujarPuntaje(ventana, pX, puntuacion, btnMenu, f):
+def dibujarPuntaje(ventana, score, puntuacion, btnMenu, f):
     ventana.blit(puntuacion, (0, 0))
     ventana.blit(btnMenu, (550, 25))
-    text = f.render("SCORE: " + str(pX), 3, AZUL)
-    ventana.blit(text, (305, 200))
-
+    text = f.render("SCORE: " + str(score), 3, AZUL)
+    ventana.blit(text, (290, 200))
 
 def dibujarAlaX(ventana, alaX):
     ventana.blit(alaX, (xalaX, yalaX))
@@ -140,7 +139,7 @@ def revisarDisparoTransporte(greenBlaster):
     global naveTransporteX, naveTransporteY
     yDisparoTie = greenBlaster.rect.top
     xDisparoTie = greenBlaster.rect.left
-    if naveTransporteX <= xDisparoTie <= naveTransporteX and naveTransporteY <= yDisparoTie + 10:
+    if naveTransporteX <= xDisparoTie <= naveTransporteX + 80 and naveTransporteY <= yDisparoTie + 80:
         greenBlaster.rect.left = -1
         return True
     return False
@@ -162,7 +161,7 @@ def dibujarListA(ventana, listA):
 
 
 def dibujarAsteroides(listA, asteroide1):
-    for y in range(40, 400 + 1, 150):
+    for y in range(100, 350 + 1, 100):
         for x in range(50, 700 + 1, 100):
             sAsteroide1 = pygame.sprite.Sprite()
             sAsteroide1.image = asteroide1
@@ -179,6 +178,8 @@ def destruirAsteroide(listA, redBlaster):
             redBlaster.rect.left = -100
             return True
     return False
+
+
 
 
 def dibujar():
@@ -233,6 +234,7 @@ def dibujar():
     efectoDisparo = pygame.mixer.Sound("shoot.wav")
     grito = pygame.mixer.Sound("grito.wav")
     pygame.mixer.music.load("MusicaFondo.mp3")
+    tieSound = pygame.mixer.Sound("tieSound.wav")
     pygame.mixer.music.play(-1)
 
     xMouse = -1
@@ -279,13 +281,9 @@ def dibujar():
 
             elif evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_RIGHT:
-                    xalaX += 30
+                    xalaX += 50
                 elif evento.key == pygame.K_LEFT:
-                    xalaX -= 30
-                elif evento.key == pygame.K_UP:
-                    yalaX -= 30
-                elif evento.key == pygame.K_DOWN:
-                    yalaX += 30
+                    xalaX -= 50
 
                 elif evento.key == pygame.K_SPACE:
                     if redBlaster.rect.left == -1:
@@ -312,34 +310,34 @@ def dibujar():
             llamarRebeldes(ventana, rebelWins, btnMenu)
 
         elif estate == SCORE:
-            dibujarPuntaje(ventana, pX, puntuacion, btnMenu, f)
+            dibujarPuntaje(ventana, score, puntuacion, btnMenu, f)
 
         elif estate == PLAY:
             a = destruirAsteroide(listA, redBlaster)
             if a:
                 a = 0
                 score += 500
-                pX = a + score
-                print(pX)
+                score = a + score
+                print(score)
 
             disarmTie -= 1
             if disarmTie == 0:
                 greenBlaster.rect.top = ycazaTie
                 greenBlaster.rect.left = xcazaTie
-                disarmTie = 50
-
-            while destruirAsteroide(listA, redBlaster):
-                grito.play()
+                disarmTie = 100
+                tieSound.play()
 
             dibujarBackground(ventana, background)
             dibujarAlaX(ventana, alaX)
             dibujarDisparoBlasterRojo(ventana, redBlaster)
             dibujarNombresPilotos(ventana, nombreCazaTie, nombreAlaX)
             dibujarCazaTie(ventana, cazaTie)
-            dibujarDisparoBlasterVerde(ventana, greenBlaster)
             dibujarListA(ventana, listA)
             dibujarNaveTransporte(ventana, naveTransporte)
-            destruirAsteroide(listA, redBlaster)
+            dibujarDisparoBlasterVerde(ventana, greenBlaster)
+
+            if destruirAsteroide(listA, redBlaster):
+                grito.play()
 
             shieldDamage = revisarAciertoDisparoVerde(greenBlaster)
             if shieldDamage:
