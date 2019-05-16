@@ -43,10 +43,10 @@ def dibujarNombre(ventana, nombreJuego):
     ventana.blit(nombreJuego, (125, 45))
 
 
-def dibujarMenu(ventana, btnJugar, mision, score1):
+def dibujarMenu(ventana, btnJugar, mision, btnProp):
     ventana.blit(btnJugar, (300, 325))
     ventana.blit(mision, (300, 400))
-    ventana.blit(score1, (300, 475))
+    ventana.blit(btnProp, (300, 475))
 
 
 def dibujarMision(ventana, bMenu, background, instruccion, btnJugar):
@@ -56,11 +56,10 @@ def dibujarMision(ventana, bMenu, background, instruccion, btnJugar):
     ventana.blit(instruccion, (0, 0))
 
 
-def dibujarPuntaje(ventana, score, puntuacion, btnMenu, f):
-    ventana.blit(puntuacion, (0, 0))
-    ventana.blit(btnMenu, (550, 25))
-    text = f.render("SCORE: " + str(score), 3, AZUL)
-    ventana.blit(text, (290, 200))
+def dibujarPuntaje(ventana, marcador, f):
+    text = f.render("SCORE: " + str(marcador), 3, AZUL)
+    ventana.blit(text, (250, 10))
+
 
 def dibujarAlaX(ventana, alaX):
     ventana.blit(alaX, (xalaX, yalaX))
@@ -180,6 +179,9 @@ def destruirAsteroide(listA, redBlaster):
     return False
 
 
+def llamarPropaganda(ventana, prop, btnMenu):
+    ventana.blit(prop, (0, 0))
+    ventana.blit(btnMenu, (550, 25))
 
 
 def dibujar():
@@ -192,8 +194,8 @@ def dibujar():
     background = pygame.image.load("fondo.jpg")
     nombreJuego = pygame.image.load("Name.png")
     btnJugar = pygame.image.load("btnJugar.png")
+    btnProp = pygame.image.load("btnProp.png")
     mision = pygame.image.load("btnMision.png")
-    score1 = pygame.image.load("btnPuntos.png")
     btnMenu = pygame.image.load("btnMenu.png")
     alaX = pygame.image.load("xwing.png")
     cazaTie = pygame.image.load("tie.png")
@@ -212,8 +214,8 @@ def dibujar():
     rebelWins = pygame.image.load("Rebeldes.jpg")
     empireWin = pygame.image.load("Imperio.png")
     asteroide1 = pygame.image.load("Asteroide.png")
-    puntuacion = pygame.image.load("score.png")
     instruccion = pygame.image.load("Mission.png")
+    prop = pygame.image.load("prop.png")
 
     redBlaster = pygame.sprite.Sprite()
     redBlaster.image = disparoRojo
@@ -229,6 +231,7 @@ def dibujar():
     greenBlaster.rect.left = -1
 
     f = pygame.font.SysFont("Times New Roman", 50)
+    marcador = 500
 
     pygame.mixer.init()
     efectoDisparo = pygame.mixer.Sound("shoot.wav")
@@ -246,8 +249,8 @@ def dibujar():
     MISION = 2
     IMPERIO = 3
     REBELDE = 4
-    SCORE = 5
-    PLAY = 6
+    PLAY = 5
+    REBELPROPAGANDA = 6
     estate = MENU
 
     while not termina:
@@ -269,7 +272,7 @@ def dibujar():
 
                 if 300 <= xMouse <= 500 and 475 <= yMouse <= 524:
                     xMouse = -1
-                    estate = SCORE
+                    estate = REBELPROPAGANDA
                 if 540 <= xMouse <= 790 and 25 <= yMouse <= 91:
                     xMouse = -1
                     estate = MENU
@@ -294,11 +297,10 @@ def dibujar():
         ventana.blit(background, (0, 0))
         if estate == MENU:
             dibujarMouse(ventana, xMouse, yMouse)
-            dibujarMenu(ventana, btnJugar, mision, score1)
+            dibujarMenu(ventana, btnJugar, mision, btnProp)
             dibujarNombre(ventana, nombreJuego)
             hpTie = 4
             hpAlaX = 2
-            score = 0
 
         elif estate == MISION:
             dibujarMision(ventana, btnMenu, background, instruccion, btnJugar)
@@ -309,16 +311,10 @@ def dibujar():
         elif estate == REBELDE:
             llamarRebeldes(ventana, rebelWins, btnMenu)
 
-        elif estate == SCORE:
-            dibujarPuntaje(ventana, score, puntuacion, btnMenu, f)
+        elif estate == REBELPROPAGANDA:
+            llamarPropaganda(ventana, prop, btnMenu)
 
-        elif estate == PLAY:
-            a = destruirAsteroide(listA, redBlaster)
-            if a:
-                a = 0
-                score += 500
-                score = a + score
-                print(score)
+        if estate == PLAY:
 
             disarmTie -= 1
             if disarmTie == 0:
@@ -335,6 +331,17 @@ def dibujar():
             dibujarListA(ventana, listA)
             dibujarNaveTransporte(ventana, naveTransporte)
             dibujarDisparoBlasterVerde(ventana, greenBlaster)
+            dibujarPuntaje(ventana, marcador, f)
+
+            a = destruirAsteroide(listA, redBlaster)
+            if a:
+                grito.play()
+                marcador += 50
+            marcador -= 1
+            if marcador <= 0:
+                estate = IMPERIO
+            elif marcador >= 1000:
+                estate = REBELDE
 
             if destruirAsteroide(listA, redBlaster):
                 grito.play()
