@@ -1,0 +1,275 @@
+#Luis Fernando Duran Castillo
+#Juego de la Seripiente
+
+import pygame
+import time
+import random
+
+#DATOS----------------------------------------------------------------------------------------------------------------------
+
+pygame.mixer.pre_init(44100,16,2,4096)
+pygame.init()
+
+ancho = 800
+alto = 600
+
+ventana = pygame.display.set_mode((ancho, alto))
+pygame.display.set_caption('Serpiente')
+
+
+ladox = ancho / 2
+ladoy = alto / 2
+
+ladoxCambio = 0
+ladoyCambio = 0
+
+blanco=(255,255,255)
+negro=(0,0,0)
+rojo=(255,0,0)
+verde=(0,255,0)
+verde_bandera = (27, 94, 32)
+azul=(0,0,255)
+amarillo=(255,255,0)
+
+icon= pygame.image.load("icon.png")
+pygame.display.set_icon(icon)
+
+fondo= pygame.image.load("pastosec1.jpg").convert()
+img= pygame.image.load('cabser.png')
+manzanaimg= pygame.image.load("mans.png")
+
+clock=pygame.time.Clock()
+
+grosManz = 30
+tamano_bloque=20
+FPS=20
+
+direccion= "der"
+
+fontchica= pygame.font.SysFont("comicsansms",25)
+fontmid= pygame.font.SysFont("comicsansms",40)
+fontgrande= pygame.font.SysFont("comicsansms",65)
+
+pygame.mixer.music.load("Yellow Forest.mp3")
+pygame.mixer.music.set_volume(1)
+pygame.mixer.music.play(-1)
+
+
+#FUNCIONES DEL JUEGO-----------------------------------------------------------------------------------------------------
+def serpiente(tamano_bloque,listaserpiente):
+
+
+
+    if direccion == "der":
+        cabeza= pygame.transform.rotate(img,270)
+    if direccion == "izq":
+        cabeza= pygame.transform.rotate(img,90)
+    if direccion == "arriba":
+        cabeza = img
+    if direccion == "abajo":
+        cabeza= pygame.transform.rotate(img,180)
+
+    ventana.blit(cabeza, (listaserpiente[-1][0], listaserpiente [-1][1]))
+
+    for XnY in listaserpiente[:-1]:
+        pygame.draw.rect(ventana, verde_bandera, [XnY[0], XnY[1], tamano_bloque, tamano_bloque])
+
+
+def randManz ():
+    randManzx = round(random.randrange(0, ancho - grosManz))  # /10.0)*10.0
+    randManzy = round(random.randrange(0, alto - grosManz))  # /10.0)*10.0
+
+    return randManzx,randManzy
+
+
+def puasa():
+    paused = True
+
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_x:
+                    paused= False
+                elif  event.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
+        ventana.fill(blanco)
+        mensaje("Puasa", negro, -100, "grande")
+        mensaje("Presiona X para continuar o Q para salir", negro, 25)
+        pygame.display.update()
+        clock.tick(5)
+
+
+def score (score):
+    texto= fontchica.render("Puntos: "+ str (score), True, blanco)
+    ventana.blit (texto, [0,0])
+
+
+def objetoTXT (texto, color, tamano):
+    if tamano == "chica":
+        txtSuperficie = fontchica.render(texto,True,color)
+    elif tamano == "mid":
+        txtSuperficie = fontmid.render(texto,True,color)
+    elif tamano == "grande":
+        txtSuperficie = fontgrande.render(texto,True,color)
+
+    return txtSuperficie, txtSuperficie.get_rect()
+
+
+def mensaje(msg, color, y_displace=0,tamano= "chica"):
+
+    txtSuperf,txtRect = objetoTXT(msg,color, tamano)
+    txtRect.center = (ancho/2), (alto/2)+ y_displace
+    ventana.blit(txtSuperf,txtRect)
+
+
+def introJuego():
+
+    intro = True
+
+    while intro:
+        ventana.fill(azul)
+        mensaje("Juego de la Serpiente", verde,-100,"grande")
+        mensaje("El objetivo del juego es comerse las manzanas", negro, -20, "chica")
+        mensaje("Si chocas contigo o con las orillas, pierdes", negro, 20, "chica")
+        mensaje("Presiona C para jugar, P para poner pausa o Q para salir", negro, 150, "chica")
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
+                if event.key == pygame.K_c:
+                    gameloop()
+
+        pygame.display.update()
+        clock.tick(15)
+
+
+def gameloop():
+    pygame.mixer.pre_init(44100, 16, 2, 4096)
+    pygame.init()
+
+    global direccion
+
+    gameExit = False
+    gameOvere= False
+
+    ancho = 1000
+    alto = 600
+
+    ladox = ancho / 2
+    ladoy = alto / 2
+
+    listaserpiente = []
+    largoserpiente = 1
+
+    ladoxCambio = 20
+    ladoyCambio = 0
+
+    global ventana
+    global FPS
+
+    pygame.display.set_caption('Serpiente')
+    gameExit = False
+
+    randManzx,randManzy=randManz()
+
+    while not gameExit:
+
+        while gameOvere == True:
+            ventana.fill(amarillo)
+            mensaje("Game Over", rojo, -50, tamano= "grande")
+            mensaje("Presiona C para jugar de nuevo o Q para salir", negro, 50, tamano="mid")
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    gameExit = True
+                    gameOvere=False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        gameExit=True
+                        gameOvere=False
+                    if event.key ==pygame.K_c:
+                        gameloop()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                gameExit= True
+#Controles del juego----------------------------------------------------------------------------------------------------
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    direccion = "izq"
+                    ladoxCambio = -tamano_bloque
+                    ladoyCambio = 0
+                elif event.key == pygame.K_RIGHT:
+                    direccion = "der"
+                    ladoxCambio = tamano_bloque
+                    ladoyCambio = 0
+                elif event.key == pygame.K_UP:
+                    direccion = "arriba"
+                    ladoyCambio = -tamano_bloque
+                    ladoxCambio = 0
+                elif event.key == pygame.K_DOWN:
+                    direccion = "abajo"
+                    ladoyCambio = tamano_bloque
+                    ladoxCambio = 0
+
+                elif event.key== pygame.K_p:
+                    puasa()
+
+#Lmite de la serpiente----------------------------------------------------------------------------------------------------------
+        if ladox>= ancho or ladox<=0 or ladoy >= alto or ladoy <= 0:
+            gameOvere=True
+
+#dibujos y posiciones------------------------------------------------------------------------------------------------------------
+        ladox+=ladoxCambio
+        ladoy+=ladoyCambio
+
+        ventana.blit(fondo,[0,0])
+
+        ventana.blit(manzanaimg,(randManzx,randManzy))
+
+        cabezaserpiente= []
+        cabezaserpiente.append(ladox)
+        cabezaserpiente.append(ladoy)
+        listaserpiente.append(cabezaserpiente)
+
+        if len(listaserpiente)> largoserpiente:
+            del listaserpiente[0]
+
+        for segmento in listaserpiente[:-1]:
+            if segmento == cabezaserpiente:
+                gameOvere = True
+
+        serpiente (tamano_bloque, listaserpiente)
+
+        score(largoserpiente-1)
+
+        pygame.display.update()
+
+        if ladox >= randManzx and ladox < randManzx + grosManz or ladox + tamano_bloque> randManzx and ladox + tamano_bloque < randManzx + grosManz:
+            if ladoy > randManzy and ladoy < randManzy + grosManz:
+                randManzx,randManzy=randManz()
+                largoserpiente+=1
+            elif ladoy + tamano_bloque > randManzy and ladoy + tamano_bloque < randManzy + grosManz:
+                randManzx,randManzy=randManz()
+                largoserpiente += 1
+
+        clock.tick(FPS)
+
+    pygame.quit()
+    quit()
+
+
+def main():
+    introJuego()
+
+main()
